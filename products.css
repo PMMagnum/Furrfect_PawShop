@@ -1,0 +1,114 @@
+/* Add to style.css or in a <style> block in products.php */
+main.container {
+    background: #fff8f0;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(166, 123, 91, 0.13);
+    padding: 32px 28px;
+    margin-top: 80px;
+}
+
+h2, .card-title {
+    color: #a67b5b;
+    font-weight: 700;
+}
+
+.card {
+    background: #fdf6ee;
+    border-radius: 14px;
+    border: none;
+    box-shadow: 0 2px 8px rgba(166, 123, 91, 0.08);
+    transition: box-shadow 0.2s;
+}
+
+.card:hover {
+    box-shadow: 0 6px 20px rgba(166, 123, 91, 0.16);
+}
+
+.card-img-top {
+    border-radius: 12px 12px 0 0;
+    background: #fff8f0;
+    object-fit: cover;
+    height: 180px;
+}
+
+.card-text {
+    color: #7d6849;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.btn-primary {
+    background-color: #a67b5b;
+    border: none;
+    font-weight: 600;
+    padding: 10px;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #c9a06c;
+    color: #fff;
+}
+
+/* Add to products.css or your main CSS file */
+.header-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #fff8f0;
+    color: #5a4d3d;
+    box-shadow: 0 2px 8px rgba(166, 123, 91, 0.08);
+    z-index: 1000;
+    padding: 0;
+}
+
+.header-fixed .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.header-fixed .logo img {
+    height: 48px;
+}
+
+.header-fixed nav ul {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+}
+
+.header-fixed nav ul li a {
+    color: #a67b5b;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 1.08rem;
+    transition: color 0.2s;
+}
+
+.header-fixed nav ul li a:hover {
+    color: #c9a06c;
+}
+
+.header-fixed .cart-login a {
+    margin-left: 1.2rem;
+    color: #7d6849;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.header-fixed .cart-login a:hover {
+    color: #a67b5b;
+}
+
+/* Add margin-top to main content to prevent it being hidden under the fixed header */
+body, main.container {
+    margin-top: 80px;
+}

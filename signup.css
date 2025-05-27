@@ -1,0 +1,135 @@
+body {
+    background: url('images/sign.jpg') no-repeat center center fixed;
+    background-size: cover;
+    background-color: #e0d8c8; /* Darker fallback color for contrast */
+    font-family: 'Poppins', Arial, sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Center form vertically and horizontally */
+}
+
+.container {
+    background: transparent; /* Invisible container */
+    border-radius: 0; /* No border-radius needed */
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Spacing between form elements */
+    padding: 30px 25px; /* Minimal padding */
+    max-width: 400px;
+    width: 100%;
+}
+
+@media (max-width: 900px) {
+    .container {
+        max-width: 370px;
+        width: 95%; /* Wider for mobile */
+        margin: 20px auto;
+        padding: 20px 10px;
+    }
+}
+
+h2 {
+    color: #ffffff; /* White for better contrast */
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 18px;
+    text-align: center;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Strong shadow for readability */
+}
+
+label {
+    color: #ffffff; /* White for better contrast */
+    font-weight: 500;
+    font-size: 1rem;
+    margin-bottom: 4px;
+    display: block;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Strong shadow */
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: none;
+    border-bottom: 2px solid rgba(224, 224, 224, 0.6); /* Semi-transparent border */
+    background: transparent; /* Fully transparent background */
+    font-size: 1rem;
+    margin-bottom: 18px;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    border-radius: 0;
+    box-sizing: border-box;
+    color: #ffffff; /* White text for visibility */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Shadow for input text */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for floating effect */
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-bottom: 2px solid rgba(166, 123, 91, 0.8); /* Semi-transparent focus border */
+    box-shadow: 0 4px 12px rgba(166, 123, 91, 0.3); /* Enhanced shadow on focus */
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 12px 0;
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(90deg, rgba(166, 123, 91, 0.7) 0%, rgba(230, 178, 89, 0.7) 100%); /* Semi-transparent gradient */
+    color: #ffffff; /* White text */
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background 0.2s, box-shadow 0.3s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Shadow for floating effect */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Shadow for button text */
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 12px 0;
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(90deg, rgba(166, 123, 91, 0.7) 0%, rgba(230, 178, 89, 0.7) 100%); /* Semi-transparent gradient */
+    color: #ffffff; /* White text */
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background 0.2s, box-shadow 0.3s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Shadow for floating effect */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Shadow for button text */
+}
+
+p {
+    text-align: center;
+    color: #ffffff; /* White for better contrast */
+    font-weight: 600;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Strong shadow */
+}
+
+a {
+    color: #e6b259; /* Brighter color for link */
+    text-decoration: none;
+    font-weight: 600;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+/* Style for error message */
+p[style*="color:red"] {
+    color: #ff6666 !important; /* Brighter red for visibility */
+    font-weight: 500;
+    margin: 10px 0;
+    text-align: center;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Strong shadow */
+}

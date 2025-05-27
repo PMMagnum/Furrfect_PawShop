@@ -1,0 +1,265 @@
+body {
+            background: #fff7ef;
+            font-family: 'Poppins', Arial, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Background image */
+.login-bg {
+    min-height: 100vh;
+    width: 100vw;
+    background: url('images/log1.jpg') center center/cover no-repeat;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Header */
+.login-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 32px 60px 0 60px;
+    box-sizing: border-box;
+}
+.brand {
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+.login-header nav a {
+    color: #fff;
+    margin-left: 32px;
+    font-size: 1.1rem;
+    text-decoration: none;
+    font-weight: 500;
+    opacity: 0.9;
+    transition: opacity 0.2s;
+}
+.login-header nav a.active,
+.login-header nav a:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+/* Centered login form */
+.login-main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+    width: 340px;
+    margin: 0 auto;
+}
+.login-form input[type="text"],
+.login-form input[type="password"] {
+    width: 100%;
+    padding: 16px 18px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.92);
+    font-size: 1.1rem;
+    margin-bottom: 0;
+    outline: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    color: #333;
+    transition: box-shadow 0.2s;
+}
+.login-form input[type="text"]:focus,
+.login-form input[type="password"]:focus {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+}
+.login-form button {
+    width: 100%;
+    padding: 14px 0;
+    border: 2px solid #fff;
+    border-radius: 8px;
+    background: rgba(0,0,0,0.25);
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    margin-top: 8px;
+}
+.login-form button:hover {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+}
+.signup-link {
+    color: #ddd;
+    text-align: center;
+    font-size: 1rem;
+    margin-top: 8px;
+}
+.signup-link a {
+    color: #fff;
+    font-weight: 600;
+    text-decoration: underline;
+}
+.error-msg {
+    color: #ffdddd;
+    background: rgba(255,0,0,0.15);
+    border-radius: 6px;
+    padding: 8px 0;
+    width: 100%;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* Footer */
+.login-footer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    padding-bottom: 24px;
+}
+.login-footer a {
+    color: #fff;
+    opacity: 0.8;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: opacity 0.2s;
+}
+.login-footer a:hover {
+    opacity: 1;
+}
+You forwarded a message
+body {
+    background: url('images/sign.jpg') no-repeat center center fixed;
+    background-size: cover;
+    background-color: #e0d8c8; /* Darker fallback color for contrast */
+    font-family: 'Poppins', Arial, sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Center form vertically and horizontally */
+}
+
+.container {
+    background: transparent; /* Invisible container */
+    border-radius: 0; /* No border-radius needed */
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Spacing between form elements */
+    padding: 30px 25px; /* Minimal padding */
+    max-width: 400px;
+    width: 100%;
+}
+
+@media (max-width: 900px) {
+    .container {
+        max-width: 370px;
+        width: 95%; /* Wider for mobile */
+        margin: 20px auto;
+        padding: 20px 10px;
+    }
+}
+
+h2 {
+    color: #ffffff; /* White for better contrast */
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 18px;
+    text-align: center;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Strong shadow for readability */
+}
+
+label {
+    color: #ffffff; /* White for better contrast */
+    font-weight: 500;
+    font-size: 1rem;
+    margin-bottom: 4px;
+    display: block;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Strong shadow */
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: none;
+    border-bottom: 2px solid rgba(224, 224, 224, 0.6); /* Semi-transparent border */
+    background: transparent; /* Fully transparent background */
+    font-size: 1rem;
+    margin-bottom: 18px;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    border-radius: 0;
+    box-sizing: border-box;
+    color: #ffffff; /* White text for visibility */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Shadow for input text */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for floating effect */
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-bottom: 2px solid rgba(166, 123, 91, 0.8); /* Semi-transparent focus border */
+    box-shadow: 0 4px 12px rgba(166, 123, 91, 0.3); /* Enhanced shadow on focus */
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 12px 0;
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(90deg, rgba(166, 123, 91, 0.7) 0%, rgba(230, 178, 89, 0.7) 100%); /* Semi-transparent gradient */
+    color: #ffffff; /* White text */
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background 0.2s, box-shadow 0.3s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Shadow for floating effect */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Shadow for button text */
+}
+
+button[type="submit"]:hover {
+    background: linear-gradient(90deg, rgba(230, 178, 89, 0.85) 0%, rgba(166, 123, 91, 0.85) 100%); /* Slightly less transparent on hover */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); /* Stronger shadow on hover */
+}
+
+p {
+    text-align: center;
+    color: #ffffff; /* White for better contrast */
+    font-weight: 600;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Strong shadow */
+}
+
+a {
+    color: #e6b259; /* Brighter color for link */
+    text-decoration: none;
+    font-weight: 600;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+/* Style for error message */
+p[style*="color:red"] {
+    color: #ff6666 !important; /* Brighter red for visibility */
+    font-weight: 500;
+    margin: 10px 0;
+    text-align: center;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Strong shadow */
+}

@@ -1,0 +1,154 @@
+/* styles.css */
+
+/* Reset margin and padding for the entire page */
+body, html {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #FFE0B5; /* light beige */
+    color: #5a4a3c; /* warm brown */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 3rem;
+    background-color: #F8C794; /* beige shade */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.logo {
+    height: 50px; /* Adjust the height as needed */
+    object-fit: contain; /* Ensures the logo scales properly */
+}
+
+.nav a {
+    margin-left: 2rem;
+    text-decoration: none;
+    color: #5a4a3c;
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+
+.nav a:hover {
+    color: #8c715a; /* lighter brown */
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3rem 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.hero {
+    position: relative;
+    width: 100%;
+    height: 100vh; /* Full viewport height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    overflow: hidden;
+}
+
+.hero-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the image covers the entire area */
+    z-index: -1; /* Places the image behind the text */
+}
+
+.hero h2, .hero p, .cta {
+    z-index: 1; /* Ensures text and button appear above the image */
+    color: #fff; /* Makes text visible over the image */
+}
+
+.hero h2 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.hero p {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.cta {
+    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent button background */
+    padding: 1rem 2.5rem;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.product-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: flex-start;
+}
+
+.product {
+    width: 300px;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 20px 12px 16px 12px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    text-align: center;
+    font-size: 15px;
+    transition: box-shadow 0.2s;
+}
+
+.product:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+}
+
+.product img {
+    width: 250%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.product h4 {
+    font-size: 18px;
+    margin: 10px 0 6px 0;
+}
+
+.product p {
+    margin: 0 0 10px 0;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.product button {
+    padding: 8px 16px;
+    font-size: 14px;
+    border: none;
+    background: #c9a06c;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.product button:hover {
+    background: #a87a4b;
+
+}

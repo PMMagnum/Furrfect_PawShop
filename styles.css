@@ -1,0 +1,37 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+.topnav {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background: #333;
+  color: #fff;
+}
+.topnav h1 {
+  margin: 0;
+}
+.topnav-right form {
+  display: flex;
+  gap: 10px;
+}
+.container {
+  padding: 20px;
+}
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+.product-card {
+  border: 1px solid #ddd;
+  padding: 15px;
+  background: #fff;
+  border-radius: 8px;
+}
+.product-card img {
+  width: 100%;
+  height: auto;
+}
