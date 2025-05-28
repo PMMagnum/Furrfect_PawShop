@@ -19,10 +19,10 @@ require 'config.php';
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-        <li class="nav-item"><a href="main.php" class="nav-link px-3 fs-4"><i class="fas fa-home"></i></a></li>
-        <li class="nav-item"><a href="products.php" class="nav-link px-3 fs-4"><i class="fas fa-box"></i></a></li>
-        <li class="nav-item"><a href="services.php" class="nav-link px-3 fs-4"><i class="fas fa-tools"></i></a></li>
-        <li class="nav-item"><a href="contact.php" class="nav-link px-3 fs-4"><i class="fas fa-envelope"></i></a></li>
+        <li class="nav-item"><a href="main.php" class="nav-link px-3 fs-4">Home</a></li>
+        <li class="nav-item"><a href="products.php" class="nav-link px-3 fs-4">Products</a></li>
+        <li class="nav-item"><a href="services.php" class="nav-link px-3 fs-4">About</i></a></li>
+        <li class="nav-item"><a href="contact.php" class="nav-link px-3 fs-4">Contact</i></a></li>
         <!-- New Nav Items -->
         <li class="nav-item"><a href="shopping_history.php" class="nav-link px-3 fs-4"><i class="fas fa-history"></i></a></li> <!-- Shopping History -->
       </ul>
