@@ -24,7 +24,7 @@ require 'config.php';
         <li class="nav-item"><a href="services.php" class="nav-link px-3 fs-4">About</i></a></li>
         <li class="nav-item"><a href="contact.php" class="nav-link px-3 fs-4">Contact</i></a></li>
         <!-- New Nav Items -->
-        <li class="nav-item"><a href="shopping_history.php" class="nav-link px-3 fs-4"><i class="fas fa-history"></i></a></li> <!-- Shopping History -->
+        
       </ul>
       <div class="d-flex align-items-center ms-lg-3 mt-3 mt-lg-0">
         <button id="cartBtn" class="btn btn-outline-secondary position-relative me-2 fs-4">
