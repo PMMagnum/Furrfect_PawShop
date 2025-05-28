@@ -4,9 +4,9 @@ session_start();
 
 // Database connection details
 $servername = "localhost";
-$username = "root";      // Change if your MySQL username is different
-$password = "";          // Use your password here if applicable (e.g., 'root' or 'password')
-$dbname = "furfect_db";  // Updated to your database name
+$username = "u866427573_furfect";      // Change if your MySQL username is different
+$password = "@Qetu1357";          // Use your password here if applicable (e.g., 'root' or 'password')
+$dbname = "u866427573_furfect";  // Updated to your database name
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);

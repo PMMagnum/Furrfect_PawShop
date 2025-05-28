@@ -8,7 +8,7 @@ if (empty($_SESSION['cart'])) {
 }
 
 // Database connection
-$mysqli = new mysqli("localhost", "root", "", "furfect_db");
+$mysqli = new mysqli("localhost", "u866427573_furfect", "@Qetu1357", "u866427573_furfect");
 if ($mysqli->connect_error) {
     die("DB Connection failed: " . $mysqli->connect_error);
 }

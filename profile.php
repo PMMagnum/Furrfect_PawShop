@@ -33,7 +33,7 @@ $stmt->close();
         .table th { background-color: #a67b5b; color: white; }
     </style>
 </head>
-<body>
+<body> 
     <?php include 'navbar.php'; ?>
     <div class="container history-container">
         <h2 class="text-center mb-4" style="color: #a67b5b;">Shopping History</h2>
