@@ -297,7 +297,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
 <div id="bannerCarousel" class="carousel slide banner" data-bs-ride="carousel" style="overflow:hidden;">
   <div class="carousel-inner">
     <div class="carousel-item active">
-      <img src="images\hachi.jpg" class="d-block w-100" alt="Furrfect Pawshop Banner" style="height:50vh;object-fit:cover;">
+      <img src="images\.jpg" class="d-block w-100" alt="Furrfect Pawshop Banner" style="height:50vh;object-fit:cover;">
     </div>
     <div class="carousel-item">
       <img src="images\mainl.jpg" class="d-block w-100" alt="Furrfect Pawshop Banner 2" style="height:50vh;object-fit:cover;">
