@@ -45,10 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="login-bg">
         <header class="login-header">
             <span class="brand"></span>
-            <nav>
-                <a href="signup.php">Sign Up</a>
-                <a href="login.php" class="active">Log In</a>
-            </nav>
+           
         </header>
         <main class="login-main">
             <form method="post" autocomplete="off" novalidate class="login-form">
