@@ -32,7 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
 }
 ?>
 
-<!-- Cart Modal -->
+<!-- =========================
+       Cart Modal
+========================= -->
 <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -99,307 +101,188 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
   </div>
 </div>
 
+<!-- =========================
+       Main Content Starts
+========================= -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" href="Furrfect_PawShop/images/finallogo.png">
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Furrfect Pawshop</title>
-  <link rel="stylesheet" href=".css" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <style>
-    body {
-      margin: 0;
-      overflow-x: hidden;
-      font-family: 'Poppins', sans-serif;
-    }
-
-    .container-fluid {
-      width: 100vw;
-      padding: 0;
-      margin: 0;
-    }
-
-    .row {
-      margin: 0;
-    }
-
-    /* Banner Section */
-    .banner {
-      position: relative;
-      width: 100%;
-      height: 50vh;
-      background: url('images/landing.jpg') no-repeat center center/cover;
-    }
-    .banner-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      color: white;
-    }
-    .banner-overlay h1 {
-      font-size: 2.5rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-    }
-    .banner-overlay p {
-      font-size: 1.2rem;
-      margin-bottom: 2rem;
-    }
-    .banner-overlay .btn {
-      background-color: #D8AE7E;
-      color: white;
-      border: none;
-      padding: 10px 30px;
-      font-size: 1.1rem;
-      font-weight: 500;
-      border-radius: 5px;
-    }
-    .banner-overlay .btn:hover {
-      background-color: #A67B5B;
-    }
-
-    /* Search Bar */
-    .search-section {
-      padding: 20px 0;
-      background-color: #f8f9fa;
-    }
-
-    /* Categories Sidebar */
-    .categories {
-      padding: 20px;
-      background-color: #fff;
-      border-right: 1px solid #ddd;
-      height: 100%;
-      position: sticky;
-      top: 20px;
-    }
-    .categories h3 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: #D8AE7E;
-      margin-bottom: 20px;
-    }
-    .categories a {
-      display: flex;
-      align-items: center;
-      padding: 10px 15px;
-      color: #D8AE7E; /* Changed from #5A6A7C to beige */
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 1.1rem;
-      text-transform: uppercase;
-    }
-    .categories a i {
-      margin-right: 10px;
-      font-size: 1.2rem;
-    }
-    .categories a:hover {
-      color: #D8AE7E;
-      background-color: #f9f1e7;
-      border-radius: 5px;
-    }
-
-    /* Products Section */
-    .product-list {
-      margin-top: 20px;
-    }
-    .product .card {
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      overflow: hidden;
-      text-align: center;
-    }
-    .product .card-img-top {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-    }
-    .product .card-body {
-      padding: 15px;
-    }
-    .product .card-title {
-      font-size: 1.1rem;
-      font-weight: 500;
-      color: #333;
-      margin-bottom: 10px;
-    }
-    .product .card-text {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: #D8AE7E;
-      margin-bottom: 15px;
-    }
-    .product .btn {
-      background-color: #5A6A7C;
-      color: white;
-      border: none;
-      padding: 10px;
-      width: 100%;
-      font-weight: 500;
-      text-transform: uppercase;
-    }
-    .product .btn:hover {
-      background-color: #D8AE7E;
-    }
-
-    /* Featured Products Heading */
-    .featured-products h2 {
-      color: #D8AE7E;
-      font-weight: 600;
-    }
-
-    /* Alert Styles */
-    .alert {
-      padding: 1rem;
-      margin-bottom: 1.5rem;
-      border-radius: 12px;
-      text-align: center;
-    }
-    .alert-success {
-      background-color: #d4edda;
-      color: #155724;
-    }
-
-    /* Responsive Adjustments */
-    @media (max-width: 768px) {
-      .categories {
-        position: relative;
-        top: 0;
-        border-right: none;
-        border-bottom: 1px solid #ddd;
-      }
-      .row {
-        flex-direction: column;
-      }
-      .col-md-3,
-      .col-md-9 {
-        flex: 0 0 100%;
-        max-width: 100%;
-      }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Furrfect Pawshop</title>
+<!-- Your styles and fonts -->
+<link rel="stylesheet" href="style.css" />
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
+<style>
+.category-link {
+    background-color: #D8AE7E;
+    height: 100px;
+    width: 115px;               /* adjusted width to include padding */
+    font-weight: bold;
+    color: white;
+    border-radius: 5px;
+    padding: 10px 60px 10px 10px; /* shorthand for padding-top/right/bottom/left */
+    margin-bottom: 30px;
+    box-sizing: border-box;
+    /* remove position: absolute; unless you have a specific reason */
+}
+.list-unstyled {
+  gap: 25px;
+  display: flex;
+  flex-direction: column;
+}
+.product .buttons form:nth-child(2) button {
+    display: block !important;
+    visibility: visible !important;
+}
+/* Added alert styles from contact.php */
+.alert {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+}
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+</style>
 <body>
 
-<!-- Banner Section -->
-<div id="bannerCarousel" class="carousel slide banner" data-bs-ride="carousel" style="overflow:hidden;">
-  <div class="carousel-inner">
-    <div class="carousel-item active">
-      <img src="images\.jpg" class="d-block w-100" alt="Furrfect Pawshop Banner" style="height:50vh;object-fit:cover;">
+<!-- =========================
+       Banner Section
+========================= -->
+<div class="container-fluid px-0 mb-4">
+  <div class="row g-0">
+    <div class="col-12">
+      <div id="mainBannerCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="images/him.jpg" class="d-block w-100 img-fluid rounded" alt="Banner 1" style="object-fit:cover; max-height:400px;">
+          </div>
+          <div class="carousel-item">
+            <img src="images/landing.jpg" class="d-block w-100 img-fluid rounded" alt="Banner 2" style="object-fit:cover; max-height:400px;">
+          </div>
+          <div class="carousel-item">
+            <img src="images/doggocatto.jpg" class="d-block w-100 img-fluid rounded" alt="Banner 3" style="object-fit:cover; max-height:400px;">
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#mainBannerCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#mainBannerCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
     </div>
-    <div class="carousel-item">
-      <img src="images\mainl.jpg" class="d-block w-100" alt="Furrfect Pawshop Banner 2" style="height:50vh;object-fit:cover;">
-    </div>
-    
-    
-    <!-- Add more images here if needed -->
-  </div>
-  <div class="banner-overlay" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:2;">
-    <h1>Welcome to Furrfect Pawshop</h1>
-    <p>Your one-stop shop for all your pet's needs. From premium food to cozy beds, we have everything to keep your furry friends happy!</p>
-    <a href="#products" class="btn">Shop Now</a>
-  </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
-  </button>
-</div>
-
-<!-- Search Bar -->
-<div class="search-section">
-  <div class="container">
-    <input type="text" placeholder="Search for pet products..." id="search-input" class="form-control form-control-lg w-100" />
   </div>
 </div>
 
 <main class="container-fluid px-2 px-md-4 mt-4">
-  <!-- Success Message Display -->
+  <!-- Added success message display -->
   <?php if (isset($_SESSION['contact_success'])): ?>
     <div class="alert alert-success">
-      <?php echo htmlspecialchars($_SESSION['contact_success']); unset($_SESSION['contact_success']); ?>
+        <?php 
+        echo htmlspecialchars($_SESSION['contact_success']); 
+        unset($_SESSION['contact_success']); // Clear the session variable
+        ?>
     </div>
   <?php endif; ?>
-
   <div class="row">
-   <!-- Sidebar categories -->
+    <!-- Sidebar categories -->
     <aside class="col-12 col-md-3 mb-4">
       <div class="card h-100 w-75 shadow-sm">
         <div class="card-body">
           <h3 class="h5">Categories</h3>
-<ul class="list-unstyled">
-  <li><a href="#" class="category-link" data-category="all" style="text-decoration: none; color: #A67B5B;">All Products</a></li>
-  <li><a href="#" class="category-link" data-category="Drooly Delights" style="text-decoration: none; color: #A67B5B;">Drooly Delights</a></li>
-  <li><a href="#" class="category-link" data-category="Feline Feast" style="text-decoration: none; color: #A67B5B;">Feline Feast</a></li>
-  <li><a href="#" class="category-link" data-category="Fur & Shine" style="text-decoration: none; color: #A67B5B;">Fur & Shine</a></li>
-  <li><a href="#" class="category-link" data-category="Litter Lodge" style="text-decoration: none; color: #A67B5B;">Litter Lodge</a></li>
-  <li><a href="#" class="category-link" data-category="Snug Paws Haven" style="text-decoration: none; color: #A67B5B;">Snug Paws Haven</a></li>
-  <li><a href="#" class="category-link" data-category="Tails & Trails" style="text-decoration: none; color: #A67B5B;">Tails & Trails</a></li>
-  <li><a href="#" class="category-link" data-category="Vital Paws" style="text-decoration: none; color: #A67B5B;">Vital Paws</a></li>
-</ul>
-
+          <ul class="list-unstyled">
+            <li><a href="#" class="category-link" data-category="all" style="text-decoration: none;">All Products</a></li>
+            <li><a href="#" class="category-link" data-category="Drooly Delights" style="text-decoration: none;">Drooly Delights</a></li>
+            <li><a href="#" class="category-link" data-category="Feline Feast" style="text-decoration: none;">Feline Feast</a></li>
+            <li><a href="#" class="category-link" data-category="Fur & Shine" style="text-decoration: none;">Fur & Shine</a></li>
+            <li><a href="#" class="category-link" data-category="Litter Lodge" style="text-decoration: none;">Litter Lodge</a></li>
+            <li><a href="#" class="category-link" data-category="Snug Paws Haven" style="text-decoration: none;">Snug Paws Haven</a></li>
+            <li><a href="#" class="category-link" data-category="Tails & Trails" style="text-decoration: none;">Tails & Trails</a></li>
+            <li><a href="#" class="category-link" data-category="Vital Paws" style="text-decoration: none;">Vital Paws</a></li>
+          </ul>
+        </div>
       </div>
     </aside>
 
-    <!-- Main Product Section -->
-    <section class="col-12 col-md-9 featured-products" id="products">
-      <h2 class="h4 mb-4">Featured Products</h2>
+    <!-- Main product list -->
+    <section class="col-12 col-md-9">
+      <section class="mb-4">
+        <input type="text" placeholder="Search for products..." id="search-input" class="form-control form-control-lg w-100" />
+      </section>
       <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 product-list">
-        <?php
-        $result = $conn->query("SELECT * FROM products");
-        while ($product = $result->fetch_assoc()):
-          $imagePath = 'products/' . $product['image'];
-          $imageSrc = file_exists(_DIR_ . '/' . $imagePath) ? $imagePath : 'products/default.png';
-        ?>
-        <div class="col d-flex">
-          <div class="card h-100 w-100 product" data-category="<?= htmlspecialchars($product['category'] ?? '') ?>">
-            <img src="<?= file_exists('products/' . $product['image']) ? 'products/' . htmlspecialchars($product['image']) : 'products/default.png' ?>"
-                 class="card-img-top"
-                 alt="<?= htmlspecialchars($product['name']) ?>">
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title"><?= htmlspecialchars($product['name']) ?></h5>
-              <p class="card-text">₱<?= number_format($product['price'], 2) ?></p>
-              <div class="buttons">
-                <form method="post">
-                  <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
-                  <button type="submit" class="btn">Add to Cart</button>
-                </form>
-                <form action="checkout.php" method="get">
-                  <input type="hidden" name="buy_product_id" value="<?= $product['id'] ?>">
-                  <button type="submit" class="btn btn-beige w-100 d-none">Buy Now</button>
-                </form>
-              </div>
-            </div>
+  <?php
+  $result = $conn->query("SELECT * FROM products");
+  while ($product = $result->fetch_assoc()):
+    $imagePath = 'products/' . $product['image'];
+    $imageSrc = file_exists(__DIR__ . '/' . $imagePath) ? $imagePath : 'products/default.png';
+  ?>
+    <div class="col d-flex">
+      <div class="card h-100 w-100 shadow-sm product" data-category="<?= htmlspecialchars($product['category'] ?? '') ?>">
+        <img src="<?= file_exists('product/' . $product['image']) ? 'product/' . htmlspecialchars($product['image']) : 'product/default.png' ?>"
+             class="card-img-top p-3 img-fluid"
+             alt="<?= htmlspecialchars($product['name']) ?>"
+             style="object-fit:contain; max-height:180px;">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title text-beige fw-semibold"><?= htmlspecialchars($product['name']) ?></h5>
+          <p class="card-text text-muted fw-semibold">₱<?= number_format($product['price'], 2) ?></p>
+          <div class="buttons">
+            <form method="post">
+              <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
+              <button type="submit" class="btn btn-beige w-100">Add to Cart</button>
+            </form>
+            <form action="checkout.php" method="get">
+              <input type="hidden" name="buy_product_id" value="<?= $product['id'] ?>">
+              <button type="submit" class="btn btn-beige w-100">Buy Now</button>
+            </form>
           </div>
         </div>
-        <?php endwhile; ?>
       </div>
-    </section>
+    </div>
+  <?php endwhile; ?>
+</div>
+<div class="footer-newsletter py-4" style="background:#FAF1E6;">
+  <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
+    <div class="mb-3 mb-md-0">
+      <h5 class="mb-1" style="font-weight:700; color:#5F8B4C;">Get the best deals!</h5>
+      <div style="color:#6F826A;">Hear first about our exclusive offers and pet care advice.</div>
+    </div>
+    <form class="d-flex" style="max-width:400px; width:100%;">
+      <input type="email" class="form-control me-2" placeholder="Enter your email address" required>
+      <button class="btn btn-beige" type="submit" style="background:#c99a60; color:white; font-weight:600;">Sign me up!</button>
+    </form>
+    <div class="ms-md-4 mt-3 mt-md-0 text-center text-md-end">
+      <div style="font-weight:600; color:#5F8B4C;">Let's be friends</div>
+      <div class="footer-social mt-2">
+        <a href="#" class="me-2"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#" class="me-2"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" class="me-2"><i class="fa-brands fa-twitter"></i></a>
+        <a href="#" class="me-2"><i class="fa-brands fa-youtube"></i></a>
+      </div>
+    </div>
   </div>
-</main>
+</div>
 
-<?php require 'footer.php'; ?>
-
-<!-- Scripts -->
+<!-- =========================
+       Scripts
+========================= -->
+<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
   // Category filtering
-  document.querySelectorAll('.categories a').forEach(link => {
+  document.querySelectorAll('.category-link').forEach(link => {
     link.addEventListener('click', e => {
       e.preventDefault();
       const cat = e.target.dataset.category;
@@ -418,6 +301,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
     });
   });
 
+  // Top Deal item clicks
+  document.querySelectorAll('.top-deal-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const cat = item.dataset.category;
+      document.querySelectorAll('.product').forEach(prod => {
+        prod.style.display = (prod.dataset.category === cat) ? 'block' : 'none';
+      });
+      document.querySelector('.product-list').scrollIntoView({ behavior: 'smooth' });
+    });
+    item.style.cursor = 'pointer';
+  });
+
   // Open cart modal on button click
   document.addEventListener('DOMContentLoaded', () => {
     const cartBtn = document.getElementById('cartBtn');
@@ -429,5 +324,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
     }
   });
 </script>
+
+<!-- Optional: your custom hover effects -->
+<style>
+.top-deal-item {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.top-deal-item:hover {
+  transform: translateY(-8px) scale(1.05);
+  box-shadow: 0 8px 24px rgba(124,94,182,0.18);
+  background: #f8f4ff;
+}
+</style>
+<?php require 'footer.php'; ?>
 </body>
 </html>
