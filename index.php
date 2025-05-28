@@ -741,26 +741,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
             <div class="product-card">
                 <img src="images/best1-removebg-preview.png" alt="Premium Dog Food">
                 <h3>Premium Dog Food</h3>
-                <p>$29.99</p>
-                <a href="login.php" class="buy-now btn">Buy Now</a>
+               
+                
             </div>
             <div class="product-card">
                 <img src="images/best2.webp" alt="Cat Toy Set">
                 <h3>Cat Toy Set</h3>
-                <p>$14.99</p>
-                <a href="login.php" class="buy-now btn">Buy Now</a>
+              
+               
             </div>
             <div class="product-card">
                 <img src="images/best4.png" alt="Pet Bed">
                 <h3>Cozy Pet Bed</h3>
-                <p>$39.99</p>
-                <a href="login.php" class="buy-now btn">Buy Now</a>
+                
+              
             </div>
             <div class="product-card">
                 <img src="images/best3-removebg-preview.png" alt="Pet Grooming Kit">
                 <h3>Pet Grooming Kit</h3>
-                <p>$24.99</p>
-                <a href="login.php" class="buy-now btn">Buy Now</a>
+              
             </div>
         </div>
     </section>
