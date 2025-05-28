@@ -1,15 +1,15 @@
 <?php
-// $servername = "localhost";
-// $username = "root";
-// $password = "";
-// $dbname = "furfect_db";
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "furfect_db";
 
 
 
-$servername = 'localhost';    
-$username = 'u866427573_furfect';
-$password = '@Qetu1357'; // or your MySQL password
-$dbname = 'u866427573_furfect'; // replace with your actual DB name
+// $servername = 'localhost';    
+// $username = 'u866427573_furfect';
+// $password = '@Qetu1357'; // or your MySQL password
+// $dbname = 'u866427573_furfect'; // replace with your actual DB name
 
 // $conn = new mysqli('localhost', 'root', '', 'furfect_db');
 
