@@ -1,5 +1,8 @@
 <?php
 // Start session and include config
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 require 'config.php';
 ?>
 
@@ -14,43 +17,48 @@ require 'config.php';
       <img src="img/finallogo.png" alt="Furrfect Pawshop Logo" style="height:48px; width:auto;" class="me-2">
       <span class="fw-bold" style="color:#a67b5b; font-size:1.3rem;">Furrfect Pawshop</span>
     </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
         <li class="nav-item"><a href="main.php" class="nav-link px-3 fs-4">Home</a></li>
         <li class="nav-item"><a href="products.php" class="nav-link px-3 fs-4">Products</a></li>
-        <li class="nav-item"><a href="services.php" class="nav-link px-3 fs-4">About</i></a></li>
-        <li class="nav-item"><a href="contact.php" class="nav-link px-3 fs-4">Contact</i></a></li>
-        <!-- New Nav Items -->
-        
+        <li class="nav-item"><a href="services.php" class="nav-link px-3 fs-4">About</a></li>
+        <li class="nav-item"><a href="contact.php" class="nav-link px-3 fs-4">Contact</a></li>
       </ul>
+
       <div class="d-flex align-items-center ms-lg-3 mt-3 mt-lg-0">
-        <button id="cartBtn" class="btn btn-outline-secondary position-relative me-2 fs-4">
+        <!-- Cart Button -->
+        <a href="cart.php" class="btn btn-outline-secondary position-relative me-2 fs-4" id="cartBtn">
           🛒
           <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cart-count">
             <?php
-            // Safely calculate cart count
             echo (isset($_SESSION['cart']) && is_array($_SESSION['cart']))
                 ? array_sum(array_column($_SESSION['cart'], 'quantity'))
                 : 0;
             ?>
           </span>
-        </button>
+        </a>
+
+        <!-- User Profile or Login -->
         <?php if (isset($_SESSION['user_id'])): ?>
           <div class="dropdown">
-            <button class="btn btn-outline-secondary ms-2 fs-4" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <button class="btn btn-outline-secondary ms-2 fs-4" type="button" id="profileDropdown"
+              data-bs-toggle="dropdown" aria-expanded="false">
               <i class="fas fa-user"></i>
             </button>
-            <!-- Profile dropdown menu can go here -->
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+              <li><a class="dropdown-item" href="profile.php">My Profile</a></li>
+              <li><a class="dropdown-item" href="logout.php">Logout</a></li>
+            </ul>
           </div>
         <?php else: ?>
-          <div class="dropdown">
-            <a href="logout.php" class="btn btn-outline-secondary ms-2 fs-4" type="button">
-              <i class="fas fa-sign-out-alt"></i>
-            </a>
-          </div>
+          <a href="login.php" class="btn btn-outline-secondary ms-2 fs-4">
+            <i class="fas fa-sign-in-alt"></i>
+          </a>
         <?php endif; ?>
       </div>
     </div>
