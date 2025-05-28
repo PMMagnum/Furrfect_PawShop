@@ -3,7 +3,8 @@ date_default_timezone_set('America/Los_Angeles'); // Set timezone to PST/PDT
 session_start();
 include 'db.php';
 
-if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'cashier') {
+// Check if user is logged in and has the correct role
+if (!isset($_SESSION['user']) || !is_array($_SESSION['user']) || !isset($_SESSION['user']['role']) || $_SESSION['user']['role'] !== 'cashier') {
     header('Location: index.php');
     exit();
 }
@@ -33,30 +34,30 @@ if (!isset($_SESSION['cart'])) {
 
 // Handle add to cart (barcode from scan or clickable)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
-    $barcode = $_POST['barcode'];
-    error_log("Received barcode: $barcode"); // Debug log for barcode submission
-    $quantityToAdd = 1;
-    if (isset($_POST['quantity']) && is_numeric($_POST['quantity']) && $_POST['quantity'] > 0) {
-        $quantityToAdd = (int)$_POST['quantity'];
-    }
-    $stmt = $pdo->prepare("SELECT * FROM products WHERE barcode = ?");
-    $stmt->execute([$barcode]);
-    $product = $stmt->fetch();
-    if ($product) {
-        $existingQty = $_SESSION['cart'][$product['id']]['quantity'] ?? 0;
-        $newQuantity = $existingQty + $quantityToAdd;
-        if ($newQuantity > $product['stock']) {
-            echo "<script>alert('Insufficient stock for {$product['name']}. Available: {$product['stock']}');</script>";
+    $barcode = $_POST['barcode'] ?? '';
+    $quantityToAdd = isset($_POST['quantity']) && is_numeric($_POST['quantity']) && $_POST['quantity'] > 0 ? (int)$_POST['quantity'] : 1;
+    if (!empty($barcode)) {
+        $stmt = $pdo->prepare("SELECT * FROM products WHERE barcode = ?");
+        $stmt->execute([$barcode]);
+        $product = $stmt->fetch();
+        if ($product) {
+            $existingQty = $_SESSION['cart'][$product['id']]['quantity'] ?? 0;
+            $newQuantity = $existingQty + $quantityToAdd;
+            if ($newQuantity > $product['stock']) {
+                echo "<script>alert('Insufficient stock for {$product['name']}. Available: {$product['stock']}');</script>";
+            } else {
+                $_SESSION['cart'][$product['id']] = [
+                    'name' => $product['name'],
+                    'price' => $product['price'],
+                    'quantity' => $newQuantity,
+                    'barcode' => $product['barcode']
+                ];
+            }
         } else {
-            $_SESSION['cart'][$product['id']] = [
-                'name' => $product['name'],
-                'price' => $product['price'],
-                'quantity' => $newQuantity,
-                'barcode' => $product['barcode']
-            ];
+            echo "<script>alert('Product not found.');</script>";
         }
     } else {
-        echo "<script>alert('Product not found.');</script>";
+        echo "<script>alert('Invalid barcode.');</script>";
     }
 }
 
@@ -338,12 +339,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clear_cart'])) {
         .btn-clear:hover { 
             background-color: #c0392b; 
         }
-        .btn-pay { 
-            background-color: #2a9d8f; 
-        }
-        .btn-pay:hover { 
-            background-color: #21867a; 
-        }
         .btn-delete {
             background-color: #e74c3c;
             padding: 5px 8px;
@@ -453,10 +448,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clear_cart'])) {
             </table>
 
             <!-- Scan Barcode Form -->
-            <form method="POST" style="margin-top: 5px;">
+            <form id="barcodeForm" method="POST" style="margin-top: 5px;">
                 <input type="text" name="barcode" placeholder="Scan or enter barcode" autofocus class="scan-barcode-input" autocomplete="off" />
                 <input type="hidden" name="add_to_cart" value="1" />
-                <button type="submit" class="btn btn-primary">Add by Barcode</button>
+                <button type="submit" class="btn btn-warning">Add by Barcode</button>
             </form>
         </div>
 
@@ -512,7 +507,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clear_cart'])) {
             <h3>Total: ₱<?= number_format($total, 2) ?></h3>
             <form action="" method="POST" class="mt-2">
                 <input type="number" step="0.01" name="payment_amount" placeholder="Enter payment amount" required>
-                <button type="submit" name="pay" class="btn-pay">Pay</button>
+                <button type="submit" name="pay" class="btn btn-warning">Pay</button>
                 <button type="submit" name="clear_cart" class="btn-clear">Clear</button>
             </form>
         </div>
@@ -522,55 +517,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clear_cart'])) {
 <form id="addProductForm" method="POST" style="display:none;">
     <input type="hidden" name="barcode" id="hiddenBarcode">
     <input type="hidden" name="add_to_cart" value="1">
+    <input type="hidden" name="quantity" value="1">
 </form>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    // Handle product row click to add to cart
-    $('.product-row').on('click', function (e) {
-        e.preventDefault(); // Prevent any default behavior
-        const barcode = $(this).data('barcode');
-        
-        if (!barcode) {
-            console.error('No barcode found for this product row.');
-            return;
+    $(document).ready(function() {
+        $('.product-row').on('click', function(e) {
+            e.preventDefault();
+            const barcode = $(this).data('barcode');
+            if (barcode) {
+                $('#hiddenBarcode').val(barcode);
+                $('#addProductForm').submit();
+            } else {
+                alert('Error: Product barcode not found.');
+            }
+        });
+
+        function filterByCategory(category) {
+            const url = new URL(window.location.href);
+            if (category === 'all') {
+                url.searchParams.delete('category');
+            } else {
+                url.searchParams.set('category', category);
+            }
+            window.location.href = url.toString();
         }
-        
-        console.log('Adding product with barcode:', barcode); // Debug log
-        
-        // Populate and submit the hidden form
-        $('#hiddenBarcode').val(barcode);
-        $('#addProductForm').submit();
+
+        // Live Date and Time Display
+        function updateDateTime() {
+            const now = new Date();
+            const options = {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric',
+                hour12: true
+            };
+            const formattedDateTime = now.toLocaleString('en-US', options);
+            document.getElementById('datetime').textContent = `Current Time: ${formattedDateTime}`;
+        }
+        updateDateTime();
+        setInterval(updateDateTime, 1000); // Update every second
     });
-
-    // Handle category filter change
-    function filterByCategory(category) {
-        const url = new URL(window.location.href);
-        if (category === 'all') {
-            url.searchParams.delete('category');
-        } else {
-            url.searchParams.set('category', category);
-        }
-        window.location.href = url.toString();
-    }
-
-    // Live Date and Time Display
-    function updateDateTime() {
-        const now = new Date();
-        const options = {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric',
-            second: 'numeric',
-            hour12: true
-        };
-        const formattedDateTime = now.toLocaleString('en-US', options);
-        document.getElementById('datetime').textContent = `Current Time: ${formattedDateTime}`;
-    }
-    updateDateTime();
-    setInterval(updateDateTime, 1000); // Update every second
 </script>
 </body>
 </html>
