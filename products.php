@@ -3,7 +3,13 @@ session_start();
 require 'config.php';
 require 'header.php'; // optional: extract header into reusable file
 ?>
-
+<style>
+  body{
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+</style>
 <main class="container mt-5">
   <h2 class="mb-4">Our Products</h2>
   <div class="row row-cols-1 row-cols-md-3 g-4">
