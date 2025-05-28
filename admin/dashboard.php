@@ -1,3 +1,4 @@
+```php
 <?php
 session_start();
 include 'db.php';
@@ -57,6 +58,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_staff'])) {
     header("Location: " . $_SERVER['PHP_SELF']);
     exit();
 }
+
+// Delete Staff Logic
+if (isset($_GET['delete_staff_id'])) {
+    $staffId = $_GET['delete_staff_id'];
+    
+    // Prevent deleting the current admin user
+    if ($staffId == $user['id']) {
+        $_SESSION['staff_message'] = "You cannot delete your own account.";
+        $_SESSION['staff_status'] = "error";
+    } else {
+        $stmt = $pdo->prepare("DELETE FROM users WHERE id = ? AND role = 'cashier'");
+        $stmt->execute([$staffId]);
+        
+        $_SESSION['staff_message'] = "Staff deleted successfully!";
+        $_SESSION['staff_status'] = "success";
+    }
+
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
+
+// Fetch Staff List
+$staffStmt = $pdo->query("SELECT id, username, fullname, role FROM users WHERE role = 'cashier'");
+$staffList = $staffStmt->fetchAll();
 
 // Add Product Logic (extended for ecommerce)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_product'])) {
@@ -152,7 +177,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_product'])) {
         exit();
     }
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -168,10 +192,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_product'])) {
         button[type="submit"][name="update_product"] {
             background-color: #f4a261;
             color: white;
-            padding: 8px 12px;
+            padding: 8px 9px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            margin-bottom: 5px;
         }
         button[type="submit"][name="update_product"]:hover {
             background-color: #e76f51;
@@ -202,7 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_product'])) {
         /* Sidebar Styles */
         .sidebar {
             width: 250px;
-            background-color: #cc8b00; /* Changed from #2c3e50 to yellow ochre */
+            background-color: #cc8b00;
             color: white;
             height: 100vh;
             position: fixed;
@@ -232,7 +257,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_product'])) {
             transition: background 0.3s;
         }
         .sidebar ul li a:hover {
-            background-color: #b07b00; /* Changed from #34495e to darker yellow ochre */
+            background-color: #b07b00;
             border-radius: 4px;
         }
         .sidebar ul li a i {
@@ -246,9 +271,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_product'])) {
             padding: 20px;
         }
         header {
-            background-color: #cc8b00; /* Changed from #2c3e50 to yellow ochre */
+            background-color: #cc8b00;
             color: white;
             padding: 20px 0;
+            border-radius: 10px;
         }
         .navbar {
             width: 90%;
@@ -294,8 +320,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_product'])) {
             padding: 12px;
             text-align: left;
         }
-        th { background-color: #cc8b00; /* Changed from #34495e to yellow ochre */
-            color: white; }
+        th { background-color: #cc8b00; color: white; }
         tr:nth-child(even) { background-color: #f2f2f2; }
         form input, form select, form button {
             width: 100%;
@@ -323,7 +348,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_product'])) {
     <div class="sidebar">
         <h3><a href="dashboard.php" style="color: white; text-decoration: none;">Admin Dashboard</a></h3>
         <ul>
-            <li><a href="#recent-sales"><i class="fas fa-chart-line"></i> Recent Sales</a></li>
+            <li><a href="#recent-sales"><i class="fas fa-chart-line "></i> Recent Sales</a></li>
             <li><a href="#product-management"><i class="fas fa-box"></i> Product Management</a></li>
             <li><a href="#add-staff"><i class="fas fa-user-plus"></i> Add Staff</a></li>
         </ul>
@@ -335,7 +360,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_product'])) {
             <div class="navbar">
                 <h1>Furrfect Pawshop</h1>
                 <div class="user-info">
-                    <span>Logged in as: <?= htmlspecialchars($user['username']) ?> (<?= $user['role'] ?>)</span>
+                    <span><?= htmlspecialchars($user['username']) ?> (<?= $user['role'] ?>)</span>
                     <a href="logout.php" class="logout-btn">Logout</a>
                 </div>
             </div>
@@ -353,31 +378,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_product'])) {
                 <!-- Recent Sales -->
                 <div class="dashboard-card" id="recent-sales">
                     <h2>Recent Sales</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Sale ID</th>
-                                <th>Cashier</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($sales as $sale): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($sale['id']) ?></td>
-                                <td><?= htmlspecialchars($sale['cashier']) ?></td>
-                                <td>₱<?= number_format($sale['total'], 2) ?></td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                    <canvas id="salesChart" width="400" height="200"></canvas>
                 </div>
 
                 <!-- Product Management -->
                 <div class="dashboard-card" id="product-management">
                     <h2>Product Management</h2>
                     <form id="add-product-form" action="" method="POST" enctype="multipart/form-data">
-                        <input type="text" name="barcode" placeholder="Barcode" required>
+                        <input type="text" name="barcode" placeholder="Barcode" required >
                         <input type="text" name="name" placeholder="Product Name" required>
                         <input type="number" step="0.01" name="price" placeholder="Price" required>
                         <input type="number" name="stock" placeholder="Stock" required>
@@ -416,9 +424,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_product'])) {
                                 <form action="" method="POST">
                                     <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
                                     <td>
-                                        <img src="<?= file_exists('product/' . $product['image']) ? 'product/' . htmlspecialchars($product['image']) : 'product/default.png' ?>" 
+                                        <img src="<?= file_exists('products/' . $product['image']) ? 'products/' . htmlspecialchars($product['image']) : 'products/default.png' ?>" 
                                              alt="<?= htmlspecialchars($product['name']) ?>" 
-                                             style="width: 50px; height: 50px; object-fit: contain;">
+                                             style="width: 50px; height蜡: 50px; object-fit: contain;">
                                     </td>
                                     <td><?= htmlspecialchars($product['barcode']) ?></td>
                                     <td><?= htmlspecialchars($product['name']) ?></td>
@@ -460,12 +468,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_product'])) {
                         </select>
                         <button type="submit" name="add_staff">Register Staff</button>
                     </form>
+
+                    <h3>Staff List</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Full Name</th>
+                                <th>Role</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($staffList)): ?>
+                                <tr>
+                                    <td colspan="4" style="text-align: center;">No staff members found.</td>
+                                </tr>
+                            <?php else: ?>
+                                <?php foreach ($staffList as $staff): ?>
+                                    <tr>
+                                        <td><?= htmlspecialchars($staff['username']) ?></td>
+                                        <td><?= htmlspecialchars($staff['fullname']) ?></td>
+                                        <td><?= htmlspecialchars($staff['role']) ?></td>
+                                        <td>
+                                            <a href="?delete_staff_id=<?= $staff['id'] ?>" onclick="return confirm('Are you sure you want to delete this staff member?');">
+                                                <button type="button">Delete</button>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
                 </div>
             </section>
         </main>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // Add product form AJAX submission
         document.getElementById('add-product-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const formData = new FormData(this);
@@ -476,9 +518,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_product'])) {
                 body: formData
             })
             .then(res => {
-                if (!res.ok) {
-                    throw new Error(`HTTP error! Status: ${res.status}`);
-                }
+                if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
                 return res.text();
             })
             .then(text => {
@@ -487,18 +527,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_product'])) {
                     if (data.success) {
                         alert("Product added successfully!");
                         fetch('fetch_products_html.php')
-                            .then(response => {
-                                if (!response.ok) {
-                                    throw new Error('Failed to fetch product table');
-                                }
-                                return response.text();
+                            .then(res => {
+                                if (!res.ok) throw new Error('Failed to fetch product table');
+                                return res.text();
                             })
                             .then(html => {
                                 document.getElementById("product-table-body").innerHTML = html;
                                 document.getElementById('add-product-form').reset();
                             })
                             .catch(error => {
-                                console.error('Error fetching product table:', error);
+                                console.error('Error refreshing product table:', error);
                                 alert('Error refreshing product table: ' + error.message);
                             });
                     } else {
@@ -514,6 +552,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_product'])) {
                 alert('Error adding product: ' + error.message);
             });
         });
+
+        // Chart for Sales by Cashier
+        document.addEventListener("DOMContentLoaded", function () {
+            const salesData = <?php
+                $totalsByCashier = [];
+                foreach ($sales as $sale) {
+                    $cashier = $sale['cashier'];
+                    $totalsByCashier[$cashier] = ($totalsByCashier[$cashier] ?? 0) + $sale['total'];
+                }
+                if (empty($totalsByCashier)) {
+                    $totalsByCashier['No Sales'] = 0;
+                }
+                echo json_encode($totalsByCashier);
+            ?>;
+
+            const labels = Object.keys(salesData);
+            const data = Object.values(salesData);
+
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Total Sales per Cashier (₱)',
+                        data: data,
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Sales by Cashier'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '₱ Sales Amount'
+                            }
+                        }
+                    }
+                }
+            });
+        });
     </script>
 </body>
 </html>
+```
