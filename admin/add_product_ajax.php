@@ -76,7 +76,13 @@ try {
     $stmt = $pdo->prepare("INSERT INTO products (barcode, name, price, stock, supplier, category, image) VALUES (?, ?, ?, ?, ?, ?, ?)");
     $stmt->execute([$barcode, $name, $price, $stock, $supplier, $category, $image]);
 
-    echo json_encode(['success' => true]);
+    // Return success with image path
+    $fullImagePath = $uploadDir . $image; // Relative path
+    echo json_encode([
+        'success' => true,
+        'message' => 'Product added successfully.',
+        'image_path' => $fullImagePath
+    ]);
     exit;
 
 } catch (Exception $e) {

@@ -1,22 +1,43 @@
 <?php
 session_start();
 
+// Database connection
+$mysqli = new mysqli("localhost", "root", "", "furfect_db");
+if ($mysqli->connect_error) {
+    die("DB Connection failed: " . $mysqli->connect_error);
+}
+
+// Handle "Buy Now" form submission
+if (isset($_POST['buy_now']) && isset($_POST['product_id'])) {
+    // Add the product to the cart
+    $productId = intval($_POST['product_id']);
+    if (!isset($_SESSION['cart'])) {
+        $_SESSION['cart'] = [];
+    }
+    // Initialize or update quantity for the product
+    if (isset($_SESSION['cart'][$productId])) {
+        $_SESSION['cart'][$productId]['quantity'] += 1; // Increment quantity if already in cart
+    } else {
+        $_SESSION['cart'][$productId] = ['quantity' => 1]; // Add new item with quantity 1
+    }
+}
+
 // Redirect if cart is empty
 if (empty($_SESSION['cart'])) {
     header("Location: cart.php");
     exit;
 }
 
-// Database connection
-// $mysqli = new mysqli("localhost", "u866427573_furfect", "@Qetu1357", "u866427573_furfect");
-// if ($mysqli->connect_error) {
-//     die("DB Connection failed: " . $mysqli->connect_error);
-// }
-
-$mysqli = new mysqli("localhost", "root", "", "furfect_db");
-if ($mysqli->connect_error) {
-    die("DB Connection failed: " . $mysqli->connect_error);
+// Clean up $_SESSION['cart'] to ensure no duplicates in structure
+$cleanedCart = [];
+foreach ($_SESSION['cart'] as $productId => $productInCart) {
+    $productId = intval($productId); // Ensure productId is an integer
+    $quantity = isset($productInCart['quantity']) ? intval($productInCart['quantity']) : 1;
+    if ($quantity > 0) {
+        $cleanedCart[$productId] = ['quantity' => $quantity];
+    }
 }
+$_SESSION['cart'] = $cleanedCart;
 
 // Get full product details (name, price, image) from DB for each cart item
 $cartWithDetails = [];
@@ -39,35 +60,47 @@ if (!empty($productIds)) {
         $products[$row['id']] = $row;
     }
 
-    // Loop cart, assuming each cart item is an array with a 'quantity' key
+    // Build cart with details, avoiding duplicates
     foreach ($_SESSION['cart'] as $productId => $productInCart) {
         if (isset($products[$productId])) {
             $product = $products[$productId];
-
-            // Get quantity from cart array
-            $quantity = isset($productInCart['quantity']) ? intval($productInCart['quantity']) : 1;
+            $quantity = $productInCart['quantity'];
             $price = floatval($product['price']);
             $subtotal = $price * $quantity;
             $totalPrice += $subtotal;
 
-            $cartWithDetails[] = [
-                'id' => $product['id'],
-                'name' => $product['name'],
-                'price' => $price,
-                'quantity' => $quantity,
-                'image' => 'img/' . $product['image'] // adjust path if needed
-            ];
+            // Check if the product is already in $cartWithDetails
+            $found = false;
+            foreach ($cartWithDetails as &$existingItem) {
+                if ($existingItem['id'] == $productId) {
+                    $existingItem['quantity'] += $quantity; // Update quantity
+                    $found = true;
+                    break;
+                }
+            }
+            unset($existingItem); // Unset the reference
+
+            // If not found, add as a new item
+            if (!$found) {
+                $cartWithDetails[] = [
+                    'id' => $product['id'],
+                    'name' => $product['name'],
+                    'price' => $price,
+                    'quantity' => $quantity,
+                    'image' => 'img/' . $product['image']
+                ];
+            }
         }
     }
 } else {
-    // empty cart edge case
+    // Empty cart edge case
     header("Location: cart.php");
     exit;
 }
 
 $error = "";
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['buy_now'])) {
     $paymentMode = $_POST['payment_mode'] ?? '';
 
     if (!$paymentMode) {
@@ -101,12 +134,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $cartJson = $mysqli->real_escape_string(json_encode($_SESSION['cart']));
             $paymentModeEscaped = $mysqli->real_escape_string($paymentMode);
             $createdAt = date('Y-m-d H:i:s');
-
             $emailField = isset($_SESSION['delivery_info']['email']) ? "'" . $mysqli->real_escape_string($_SESSION['delivery_info']['email']) . "'" : "NULL";
+            $status = 'pending'; // Set status to pending
 
             // Save order to DB
-            $insertOrderSQL = "INSERT INTO orders (cart_json, total_price, payment_mode, order_date, email) 
-                               VALUES ('$cartJson', $totalPrice, '$paymentModeEscaped', '$createdAt', $emailField)";
+            $insertOrderSQL = "INSERT INTO orders (cart_json, total_price, payment_mode, order_date, email, status) 
+                               VALUES ('$cartJson', $totalPrice, '$paymentModeEscaped', '$createdAt', $emailField, '$status')";
 
             if ($mysqli->query($insertOrderSQL)) {
                 $orderId = $mysqli->insert_id;
@@ -116,6 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'cart' => $cartWithDetails,
                     'total' => $totalPrice,
                     'payment_mode' => $paymentMode,
+                    'status' => $status
                 ];
 
                 header("Location: " . ($paymentMode === 'COD' ? "cod.php" : "otc.php"));
@@ -144,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <h1 class="text-4xl font-light tracking-wide mb-8 text-yellow-800">FURRFECT PAWSHOP</h1>
 
   <nav class="text-sm text-gray-600 mb-8 font-light flex flex-wrap gap-2">
-    <span>Cart</span><span>&gt;</span>
+    <span>Cart</span><span>></span>
     <span class="font-semibold">Payment</span>
   </nav>
 

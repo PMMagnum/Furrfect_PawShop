@@ -151,4 +151,3 @@ body {
     </form>
 </main>
 
-<?php require 'footer.php'; ?>

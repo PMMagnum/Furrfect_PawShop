@@ -37,4 +37,3 @@ require 'header.php'; // optional: extract header into reusable file
   </div>
 </main>
 
-<?php include 'footer.php'; ?>

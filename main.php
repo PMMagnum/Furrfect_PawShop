@@ -9,7 +9,7 @@ if (!isset($_SESSION['cart'])) {
 }
 
 // Handle Add to Cart
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id']) && !isset($_POST['buy_now'])) {
     $productId = intval($_POST['product_id']);
     $stmt = $conn->prepare("SELECT * FROM products WHERE id = ?");
     $stmt->bind_param("i", $productId);
@@ -29,9 +29,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
     }
     header("Location: " . $_SERVER['PHP_SELF']);
     exit;
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_now'])) {
+    // Handle Buy Now action
+    $_SESSION['buy_now'] = [
+        'product_id' => $_POST['product_id'],
+        'product_name' => $_POST['product_name'],
+        'quantity' => 1
+    ];
+    header("Location: checkout.php");
+    exit;
 }
 ?>
-
 <!-- =========================
        Cart Modal
 ========================= -->
@@ -226,11 +234,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
   $result = $conn->query("SELECT * FROM products");
   while ($product = $result->fetch_assoc()):
     $imagePath = 'products/' . $product['image'];
-    $imageSrc = file_exists(__DIR__ . '/' . $imagePath) ? $imagePath : 'products/default.png';
+    $imageSrc = file_exists(__DIR__ . 'products/' . $imagePath) ? $imagePath : 'products/default.png';
   ?>
     <div class="col d-flex">
       <div class="card h-100 w-100 shadow-sm product" data-category="<?= htmlspecialchars($product['category'] ?? '') ?>">
-        <img src="<?= file_exists('product/' . $product['image']) ? 'product/' . htmlspecialchars($product['image']) : 'product/default.png' ?>"
+        <img src="<?= file_exists('products/' . $product['image']) ? 'products/' . htmlspecialchars($product['image']) : 'products/default.png' ?>"
              class="card-img-top p-3 img-fluid"
              alt="<?= htmlspecialchars($product['name']) ?>"
              style="object-fit:contain; max-height:180px;">
@@ -242,37 +250,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
               <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
               <button type="submit" class="btn btn-beige w-100">Add to Cart</button>
             </form>
-            <form action="checkout.php" method="get">
-              <input type="hidden" name="buy_product_id" value="<?= $product['id'] ?>">
-              <button type="submit" class="btn btn-beige w-100">Buy Now</button>
-            </form>
+            <form method="post" action="checkout.php" class="mt-2" id="buy-now-form-<?= $product['id'] ?>">
+  <input type="hidden" name="product_name" value="<?= htmlspecialchars($product['name']) ?>">
+  <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
+  <input type="hidden" name="buy_now" value="1">
+  <button type="submit" class="btn btn-beige w-100">Buy Now</button>
+</form>
           </div>
         </div>
       </div>
     </div>
   <?php endwhile; ?>
 </div>
-<div class="footer-newsletter py-4" style="background:#FAF1E6;">
-  <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
-    <div class="mb-3 mb-md-0">
-      <h5 class="mb-1" style="font-weight:700; color:#5F8B4C;">Get the best deals!</h5>
-      <div style="color:#6F826A;">Hear first about our exclusive offers and pet care advice.</div>
-    </div>
-    <form class="d-flex" style="max-width:400px; width:100%;">
-      <input type="email" class="form-control me-2" placeholder="Enter your email address" required>
-      <button class="btn btn-beige" type="submit" style="background:#c99a60; color:white; font-weight:600;">Sign me up!</button>
-    </form>
-    <div class="ms-md-4 mt-3 mt-md-0 text-center text-md-end">
-      <div style="font-weight:600; color:#5F8B4C;">Let's be friends</div>
-      <div class="footer-social mt-2">
-        <a href="#" class="me-2"><i class="fa-brands fa-facebook-f"></i></a>
-        <a href="#" class="me-2"><i class="fa-brands fa-instagram"></i></a>
-        <a href="#" class="me-2"><i class="fa-brands fa-twitter"></i></a>
-        <a href="#" class="me-2"><i class="fa-brands fa-youtube"></i></a>
-      </div>
-    </div>
-  </div>
-</div>
+
 
 <!-- =========================
        Scripts
@@ -336,6 +326,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
   background: #f8f4ff;
 }
 </style>
-<?php require 'footer.php'; ?>
+
 </body>
 </html>

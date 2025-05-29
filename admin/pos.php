@@ -34,12 +34,14 @@ if (!isset($_SESSION['cart'])) {
 
 // Handle add to cart (barcode from scan or clickable)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
+    error_log('add_to_cart POST received: ' . print_r($_POST, true)); // Debug
     $barcode = $_POST['barcode'] ?? '';
     $quantityToAdd = isset($_POST['quantity']) && is_numeric($_POST['quantity']) && $_POST['quantity'] > 0 ? (int)$_POST['quantity'] : 1;
     if (!empty($barcode)) {
         $stmt = $pdo->prepare("SELECT * FROM products WHERE barcode = ?");
         $stmt->execute([$barcode]);
         $product = $stmt->fetch();
+        error_log('Product query result: ' . print_r($product, true)); // Debug
         if ($product) {
             $existingQty = $_SESSION['cart'][$product['id']]['quantity'] ?? 0;
             $newQuantity = $existingQty + $quantityToAdd;
@@ -52,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
                     'quantity' => $newQuantity,
                     'barcode' => $product['barcode']
                 ];
+                error_log('Product added to cart: ' . $product['id']); // Debug
             }
         } else {
             echo "<script>alert('Product not found.');</script>";
@@ -91,6 +94,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_item'])) {
     $product_id_to_delete = $_POST['delete_item'];
     if (isset($_SESSION['cart'][$product_id_to_delete])) {
         unset($_SESSION['cart'][$product_id_to_delete]);
+    }
+}
+
+// Handle processing of e-commerce orders
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['process_order'])) {
+    $order_id = (int)$_POST['order_id'];
+    
+    // Fetch order details
+    $stmt = $pdo->prepare("SELECT cart_json, payment_mode FROM orders WHERE id = ? AND status = 'pending'");
+    $stmt->execute([$order_id]);
+    $order = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if ($order) {
+        // Mark order as processed
+        $stmt = $pdo->prepare("UPDATE orders SET status = 'processed' WHERE id = ?");
+        $stmt->execute([$order_id]);
+        
+        // If payment mode is Over-the-counter, add items to cart
+        if ($order['payment_mode'] === 'Counter') {
+            $cart_items = json_decode($order['cart_json'], true);
+            foreach ($cart_items as $product_id => $item) {
+                $stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
+                $stmt->execute([$product_id]);
+                $product = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if ($product) {
+                    $existingQty = $_SESSION['cart'][$product['id']]['quantity'] ?? 0;
+                    $newQuantity = $existingQty + $item['quantity'];
+                    
+                    if ($newQuantity > $product['stock']) {
+                        echo "<script>alert('Insufficient stock for {$product['name']}. Available: {$product['stock']}');</script>";
+                    } else {
+                        $_SESSION['cart'][$product['id']] = [
+                            'name' => $product['name'],
+                            'price' => $product['price'],
+                            'quantity' => $newQuantity,
+                            'barcode' => $product['barcode']
+                        ];
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Handle clearing all pending e-commerce orders
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clear_pending_orders'])) {
+    try {
+        $stmt = $pdo->prepare("UPDATE orders SET status = 'cancelled' WHERE status = 'pending'");
+        $stmt->execute();
+        echo "<script>alert('All pending e-commerce orders have been cleared.');</script>";
+    } catch (Exception $e) {
+        echo "<script>alert('Failed to clear pending orders: {$e->getMessage()}');</script>";
     }
 }
 
@@ -262,6 +318,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clear_cart'])) {
             margin-bottom: 5px;
             font-size: 1.5rem;
         }
+        h3 {
+            color: #86592d;
+            margin: 10px 0 5px;
+            font-size: 1.2rem;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -295,6 +356,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clear_cart'])) {
         .cart-table th:nth-child(3), .cart-table td:nth-child(3) { width: 20%; }
         .cart-table th:nth-child(4), .cart-table td:nth-child(4) { width: 15%; }
         .cart-table th:nth-child(5), .cart-table td:nth-child(5) { width: 15%; }
+        .notification-table th, .notification-table td {
+            padding: 6px 10px;
+            text-align: left;
+        }
+        .notification-table th {
+            background-color: #cc7722;
+            color: white;
+        }
+        .notification-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 0.85rem;
+        }
         .name-cell, .barcode-cell, .category-cell {
             white-space: nowrap;
             overflow: hidden;
@@ -430,6 +506,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clear_cart'])) {
                 </thead>
                 <tbody>
                 <?php foreach ($products as $product): ?>
+                    <?php if (empty($product['barcode'])) { error_log("Missing barcode for product ID: " . $product['id']); } ?>
                     <tr class="product-row" data-barcode="<?= htmlspecialchars($product['barcode']) ?>">
                         <td class="name-cell" data-fulltext="<?= htmlspecialchars($product['name']) ?>">
                             <?= htmlspecialchars($product['name']) ?>
@@ -458,6 +535,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clear_cart'])) {
         <!-- Cart -->
         <div class="pos-card cart-card">
             <h2>Cart</h2>
+            <!-- Notification Section for Pending Orders -->
+            <h3>Pending E-commerce Orders</h3>
+            <div class="notification-table-wrapper" style="max-height: 150px; overflow-y: auto;">
+                <table class="notification-table" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Payment Mode</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        // Fetch pending orders
+                        $stmt = $pdo->prepare("SELECT id, payment_mode, total_price FROM orders WHERE status = 'pending'");
+                        $stmt->execute();
+                        $pendingOrders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                        foreach ($pendingOrders as $order):
+                        ?>
+                            <tr>
+                                <td>#<?php echo htmlspecialchars($order['id']); ?></td>
+                                <td><?php echo htmlspecialchars($order['payment_mode']); ?></td>
+                                <td>₱<?php echo number_format($order['total_price'], 2); ?></td>
+                                <td>
+                                    <form method="POST">
+                                        <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
+                                        <button type="submit" name="process_order" class="btn btn-warning btn-sm">Process</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+            <form method="POST" class="mt-2" onsubmit="return confirm('Are you sure you want to clear all pending e-commerce orders?');">
+                <button type="submit" name="clear_pending_orders" class="btn btn-clear">Clear All Pending Orders</button>
+            </form>
             <form method="POST">
                 <div class="cart-table-wrapper">
                     <table class="cart-table">
@@ -514,54 +629,82 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clear_cart'])) {
     </div>
 </main>
 
-<form id="addProductForm" method="POST" style="display:none;">
-    <input type="hidden" name="barcode" id="hiddenBarcode">
-    <input type="hidden" name="add_to_cart" value="1">
-    <input type="hidden" name="quantity" value="1">
-</form>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
-    $(document).ready(function() {
-        $('.product-row').on('click', function(e) {
-            e.preventDefault();
-            const barcode = $(this).data('barcode');
-            if (barcode) {
-                $('#hiddenBarcode').val(barcode);
-                $('#addProductForm').submit();
-            } else {
-                alert('Error: Product barcode not found.');
+$(document).ready(function() {
+    $('.product-row').on('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const barcode = $(this).data('barcode');
+        console.log('Product row clicked:', barcode); // Debug
+        if (barcode) {
+            $.ajax({
+                url: 'pos.php',
+                method: 'POST',
+                data: {
+                    barcode: barcode,
+                    add_to_cart: 1,
+                    quantity: 1
+                },
+                success: function(response) {
+                    console.log('Product added to cart');
+                    location.reload(); // Refresh to update cart
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error adding to cart:', error);
+                    alert('Failed to add product to cart.');
+                }
+            });
+        } else {
+            alert('Error: Product barcode not found.');
+        }
+    });
+
+    function filterByCategory(category) {
+        const url = new URL(window.location.href);
+        if (category === 'all') {
+            url.searchParams.delete('category');
+        } else {
+            url.searchParams.set('category', category);
+        }
+        window.location.href = url.toString();
+    }
+
+    // Live Date and Time Display
+    function updateDateTime() {
+        const now = new Date();
+        const options = {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            hour12: true
+        };
+        const formattedDateTime = now.toLocaleString('en-US', options);
+        document.getElementById('datetime').textContent = `Current Time: ${formattedDateTime}`;
+    }
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+
+    // Function to fetch pending orders
+    function fetchPendingOrders() {
+        $.ajax({
+            url: 'fetch_pending_orders.php',
+            method: 'GET',
+            success: function(data) {
+                $('.notification-table tbody').html(data);
+            },
+            error: function() {
+                console.log('Error fetching pending orders');
             }
         });
+    }
 
-        function filterByCategory(category) {
-            const url = new URL(window.location.href);
-            if (category === 'all') {
-                url.searchParams.delete('category');
-            } else {
-                url.searchParams.set('category', category);
-            }
-            window.location.href = url.toString();
-        }
-
-        // Live Date and Time Display
-        function updateDateTime() {
-            const now = new Date();
-            const options = {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric',
-                second: 'numeric',
-                hour12: true
-            };
-            const formattedDateTime = now.toLocaleString('en-US', options);
-            document.getElementById('datetime').textContent = `Current Time: ${formattedDateTime}`;
-        }
-        updateDateTime();
-        setInterval(updateDateTime, 1000); // Update every second
-    });
+    setInterval(fetchPendingOrders, 10000);
+    fetchPendingOrders();
+});
 </script>
 </body>
 </html>

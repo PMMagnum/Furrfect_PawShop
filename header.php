@@ -14,7 +14,7 @@ require 'config.php';
 <nav class="navbar navbar-expand-lg navbar-light bg-light py-2 shadow-sm">
   <div class="container">
     <a class="navbar-brand d-flex align-items-center" href="main.php">
-      <img src="img/finallogo.png" alt="Furrfect Pawshop Logo" style="height:48px; width:auto;" class="me-2">
+      <img src="images\finallogo.png" alt="Furrfect Pawshop Logo" style="height:48px; width:auto;" class="me-2">
       <span class="fw-bold" style="color:#a67b5b; font-size:1.3rem;">Furrfect Pawshop</span>
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"

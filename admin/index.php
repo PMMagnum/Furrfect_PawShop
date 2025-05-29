@@ -118,7 +118,7 @@ if (isset($_SESSION['user']) && is_array($_SESSION['user']) && isset($_SESSION['
 
       <!-- Logo + Title -->
       <div class="logo-title">
-        <img src="Logoo.png" alt="Furrfect Pawshop Logo">
+        <img src="C:\xampp\htdocs\GIT1-FURFECT\Furrfect_PawShop\images\finallogo.png" alt="Furrfect Pawshop Logo">
       </div>
 
       <!-- Error message -->
